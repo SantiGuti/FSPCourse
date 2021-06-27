@@ -25,11 +25,9 @@ const App = () => {
   const [points, setPoints] = useState(new Array(7).fill(0));
 
   const clickVote = () => {
-    console.log(points)
     const copy = [...points];
-    console.log(copy);
     copy[selected] += 1;
-    console.log(copy);
+    console.log(points)
     return (setPoints(copy))
   }
 
@@ -47,7 +45,7 @@ const App = () => {
       <Button handleClick={clickVote} text="vote" />
       <Button handleClick={nextAnecdote} text="next anecdote"/>
       <Header title="Anecdote with most votes" />
-      <p>{anecdotes[points[0]]}</p>
+      <p>{anecdotes[points.indexOf(Math.max.apply(null, points))]}</p>
     </div>
     )
 };
