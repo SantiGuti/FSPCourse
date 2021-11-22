@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import RenderCountries from "./components/RenderCountries";
 import axios from "axios";
 
