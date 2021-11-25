@@ -3,12 +3,15 @@ import PersonForms from "./components/PersonForm";
 import SearchInput from "./components/SearchInput";
 import RenderPersons from "./components/RenderPersons";
 import personService from "./services/persons";
+import Notification from "./components/Notification";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [newSearch, setNewSearch] = useState("");
+  const [notification, setNotification] = useState(null);
+  const [notificationType, setNotificationType] = useState() //true = notification. false = error
 
   useEffect(() => {
     personService.getAll().then((initialPersons) => {
@@ -28,6 +31,11 @@ const App = () => {
         setPersons(persons.concat(returnedPerson));
         setNewName("");
         setNewNumber("");
+        setNotification("Added " + returnedPerson.name)
+        setNotificationType(true)
+        setTimeout(() =>{
+          setNotification(null)
+        }, 5000)
       });
     } else {
       if (window.confirm(newName + " is already added to phonebook, replace the old number with a new one?")) {
@@ -43,6 +51,11 @@ const App = () => {
                 person.name !== newName ? person : returnedPerson
               )
             );
+            setNotification(returnedPerson.name + " updated")
+            setNotificationType(true)
+            setTimeout(() => {
+              setNotification(null);
+            }, 5000);
           });
       }
     }
@@ -53,7 +66,14 @@ const App = () => {
       personService.remove(id).then(() => {
         const newPersons = persons.filter((item) => item.id !== id);
         setPersons(newPersons);
-      });
+      })
+      .catch(error => {
+        setNotification("Information of " + name + " has already been removed from server");
+        setNotificationType(false);
+        setTimeout(() => {
+          setNotification(null);
+        }, 5000);
+      })
     }
   };
 
@@ -72,6 +92,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notification} type={notificationType}/>
       <SearchInput newSearch={newSearch} searchHandler={handleSearchChange} />
       <h2>Add a new</h2>
       <PersonForms
